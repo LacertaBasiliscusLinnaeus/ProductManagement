@@ -22,8 +22,8 @@ package labs.pm.data;
  */
 public class Review {
 
-    private Rating rating;
-    private String comments;
+    private final Rating rating;
+    private final String comments;
 
     public Review(Rating rating, String comments) {
         this.rating = rating;

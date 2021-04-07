@@ -33,9 +33,9 @@ public class Shop {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        var pm = new ProductManager(Locale.forLanguageTag("ru-RU"));
+        var pm = new ProductManager(Locale.forLanguageTag("en-US"));
         var p1 = pm.createProduct(101, "Tea", BigDecimal.valueOf(1.99), Rating.NOT_RATED);
-        pm.printProductReport();
+        pm.printProductReport(p1);
         p1 = pm.reviewProduct(p1, Rating.FIVE_STAR, "The best tea ever!");
         p1 = pm.reviewProduct(p1, Rating.FOUR_STAR, "Nice hot cup of tea");
         p1 = pm.reviewProduct(p1, Rating.TWO_STAR, "Reather weak tea");
@@ -43,33 +43,14 @@ public class Shop {
         p1 = pm.reviewProduct(p1, Rating.FOUR_STAR, "Good tea");
         p1 = pm.reviewProduct(p1, Rating.FIVE_STAR, "Perfect tea");
         p1 = pm.reviewProduct(p1, Rating.THREE_STAR, "Just add some lemon");
-        pm.printProductReport();
+        pm.printProductReport(p1);
 
-//        var p1 = pm.createProduct(101, "Tea", BigDecimal.valueOf(1.99), Rating.THREE_STAR);
-//        var p2 = pm.createProduct(102, "Coffee", BigDecimal.valueOf(1.99), Rating.FOUR_STAR);
-//        var p3 = pm.createProduct(103, "Cake", BigDecimal.valueOf(3.99), Rating.FIVE_STAR, LocalDate.now().plusDays(2));
-//
-//        var p4 = pm.createProduct(105, "Cookie", BigDecimal.valueOf(3.99), Rating.TWO_STAR, LocalDate.now());
-//        var p5 = p3.applyRating(Rating.THREE_STAR);
-//
-//        var p6 = pm.createProduct(104, "Chokolate", BigDecimal.valueOf(2.99), Rating.FIVE_STAR);
-//        var p7 = pm.createProduct(104, "Chokolate", BigDecimal.valueOf(2.99), Rating.FIVE_STAR, LocalDate.now().plusDays(2));
-//
-//        var p8 = p4.applyRating(Rating.FIVE_STAR);
-//        var p9 = p1.applyRating(Rating.TWO_STAR);
-//        if (p3 instanceof Food) {
-//            LocalDate bestBefore = ((Food) p3).getBestBefore();
-//        }
-//        System.out.println(p1.getBestBefore());
-//        System.out.println(p3.getBestBefore());
-//
-//        System.out.println(p6.equals(p7));
-//
-//        Product[] products = {p1, p2, p3, p4, p5, p6, p7, p8, p9};
-//
-//        for (var p : products) {
-//            System.out.println(p);
-//        }
+        var p2 = pm.createProduct(102, "Coffee", BigDecimal.valueOf(1.99), Rating.NOT_RATED);
+        pm.printProductReport(p2);
+        p2 = pm.reviewProduct(p2, Rating.THREE_STAR, "Coffee was ok");
+        p2 = pm.reviewProduct(p2, Rating.ONE_STAR, "Where is the milk!?");
+        p2 = pm.reviewProduct(p2, Rating.FIVE_STAR, "It's perfect with ten spoons of sugar!");
+        pm.printProductReport(p2);
     }
 
 }

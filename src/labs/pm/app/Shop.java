@@ -17,7 +17,6 @@
 package labs.pm.app;
 
 import java.math.BigDecimal;
-import java.util.Locale;
 import labs.pm.data.ProductManager;
 import labs.pm.data.Rating;
 
@@ -33,7 +32,8 @@ public class Shop {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        var pm = new ProductManager(Locale.forLanguageTag("en-US"));
+        var pm = new ProductManager("en-US");
+
         var p1 = pm.createProduct(101, "Tea", BigDecimal.valueOf(1.99), Rating.NOT_RATED);
         pm.printProductReport(p1);
         p1 = pm.reviewProduct(p1, Rating.FIVE_STAR, "The best tea ever!");
@@ -44,6 +44,8 @@ public class Shop {
         p1 = pm.reviewProduct(p1, Rating.FIVE_STAR, "Perfect tea");
         p1 = pm.reviewProduct(p1, Rating.THREE_STAR, "Just add some lemon");
         pm.printProductReport(p1);
+
+        pm.changeLocale("ru-RU");
 
         var p2 = pm.createProduct(102, "Coffee", BigDecimal.valueOf(1.99), Rating.NOT_RATED);
         pm.printProductReport(p2);

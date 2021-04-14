@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 /**
  *
@@ -35,18 +36,31 @@ import java.util.ResourceBundle;
  */
 public class ProductManager {
 
-    Map<Product, List<Review>> products = new HashMap<>();
+    private Map<Product, List<Review>> products = new HashMap<>();
+    private ResourceFormatter formatter;
 
-    private final Locale locale;
-    private final ResourceBundle resources;
-    private final DateTimeFormatter dateFormat;
-    private final NumberFormat moneyFormat;
+    private static Map<String, ResourceFormatter> formatters = Map.of(
+            "en-GB", new ResourceFormatter(Locale.UK),
+            "en-US", new ResourceFormatter(Locale.US),
+            "fr-FR", new ResourceFormatter(Locale.FRENCH),
+            "zh-CN", new ResourceFormatter(Locale.CHINA),
+            "ru-RU", new ResourceFormatter(new Locale("ru", "RU"))
+    );
 
     public ProductManager(Locale locale) {
-        this.locale = locale;
-        resources = ResourceBundle.getBundle("labs.pm.data.resources", locale);
-        dateFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).localizedBy(locale);
-        moneyFormat = NumberFormat.getCurrencyInstance(locale);
+        this(locale.toLanguageTag());
+    }
+
+    public ProductManager(String languageTag) {
+        changeLocale(languageTag);
+    }
+
+    public void changeLocale(String languageTag) {
+        formatter = formatters.getOrDefault(languageTag, formatters.get("ru-RU"));
+    }
+
+    public static Set<String> getSupportedLocales() {
+        return formatters.keySet();
     }
 
     public Product createProduct(int id, String name, BigDecimal price, Rating rating, LocalDate bestBefore) {
@@ -66,18 +80,14 @@ public class ProductManager {
         List<Review> reviews = products.get(product);
 
         StringBuilder txt = new StringBuilder();
-        txt.append(MessageFormat.format(resources.getString("product"),
-                product.getName(),
-                moneyFormat.format(product.getPrice()),
-                product.getRating().getStars(),
-                dateFormat.format(product.getBestBefore())));
+        txt.append(formatter.formatProduct(product));
         txt.append("\n");
         for (Review review : reviews) {
-            txt.append(MessageFormat.format(resources.getString("review"), review.getRating().getStars(), review.getComments()));
+            txt.append(formatter.formatReview(review));
             txt.append("\n");
         }
         if (reviews.isEmpty()) {
-            txt.append(resources.getString("no.reviews"));
+            txt.append(formatter.getText("no.reviews"));
             txt.append("\n");
         }
 
@@ -99,5 +109,36 @@ public class ProductManager {
         products.put(product, reviews);
 
         return product;
+    }
+
+    private static class ResourceFormatter {
+
+        private final Locale locale;
+        private final ResourceBundle resources;
+        private final DateTimeFormatter dateFormat;
+        private final NumberFormat moneyFormat;
+
+        private ResourceFormatter(Locale locale) {
+            this.locale = locale;
+            resources = ResourceBundle.getBundle("labs.pm.data.resources", locale);
+            dateFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).localizedBy(locale);
+            moneyFormat = NumberFormat.getCurrencyInstance(locale);
+        }
+
+        private String formatProduct(Product product) {
+            return MessageFormat.format(getText("product"),
+                    product.getName(),
+                    moneyFormat.format(product.getPrice()),
+                    product.getRating().getStars(),
+                    dateFormat.format(product.getBestBefore()));
+        }
+
+        private String formatReview(Review review) {
+            return MessageFormat.format(getText("review"), review.getRating().getStars(), review.getComments());
+        }
+
+        private String getText(String key) {
+            return resources.getString(key);
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 VASILYK
+ * Copyright (C) 2021 LacertaBasiliscusLinnaeus
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@ package labs.pm.data;
 
 /**
  *
- * @author VASILYK
+ * @author LacertaBasiliscusLinnaeus
  * @param <T>
  */
 @FunctionalInterface

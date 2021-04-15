@@ -17,6 +17,8 @@
 package labs.pm.app;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
+import labs.pm.data.Product;
 import labs.pm.data.ProductManager;
 import labs.pm.data.Rating;
 
@@ -34,25 +36,54 @@ public class Shop {
     public static void main(String[] args) {
         var pm = new ProductManager("en-US");
 
-        var p1 = pm.createProduct(101, "Tea", BigDecimal.valueOf(1.99), Rating.NOT_RATED);
-        pm.printProductReport(p1);
-        p1 = pm.reviewProduct(p1, Rating.FIVE_STAR, "The best tea ever!");
-        p1 = pm.reviewProduct(p1, Rating.FOUR_STAR, "Nice hot cup of tea");
-        p1 = pm.reviewProduct(p1, Rating.TWO_STAR, "Reather weak tea");
-        p1 = pm.reviewProduct(p1, Rating.FOUR_STAR, "Fine tea");
-        p1 = pm.reviewProduct(p1, Rating.FOUR_STAR, "Good tea");
-        p1 = pm.reviewProduct(p1, Rating.FIVE_STAR, "Perfect tea");
-        p1 = pm.reviewProduct(p1, Rating.THREE_STAR, "Just add some lemon");
-        pm.printProductReport(p1);
+        pm.createProduct(101, "Tea", BigDecimal.valueOf(1.99), Rating.NOT_RATED);
+//        pm.printProductReport(101);
+        pm.reviewProduct(101, Rating.FIVE_STAR, "The best tea ever!");
+        pm.reviewProduct(101, Rating.FOUR_STAR, "Nice hot cup of tea");
+        pm.reviewProduct(101, Rating.TWO_STAR, "Reather weak tea");
+        pm.reviewProduct(101, Rating.FOUR_STAR, "Fine tea");
+        pm.reviewProduct(101, Rating.FOUR_STAR, "Good tea");
+        pm.reviewProduct(101, Rating.FIVE_STAR, "Perfect tea");
+        pm.reviewProduct(101, Rating.THREE_STAR, "Just add some lemon");
+//        pm.printProductReport(101);
 
-        pm.changeLocale("ru-RU");
+//        pm.changeLocale("ru-RU");
+        pm.createProduct(102, "Coffee", BigDecimal.valueOf(1.99), Rating.NOT_RATED);
+//        pm.printProductReport(102);
+        pm.reviewProduct(102, Rating.THREE_STAR, "Coffee was ok");
+        pm.reviewProduct(102, Rating.ONE_STAR, "Where is the milk!?");
+        pm.reviewProduct(102, Rating.FIVE_STAR, "It's perfect with ten spoons of sugar!");
+//        pm.printProductReport(102);
 
-        var p2 = pm.createProduct(102, "Coffee", BigDecimal.valueOf(1.99), Rating.NOT_RATED);
-        pm.printProductReport(p2);
-        p2 = pm.reviewProduct(p2, Rating.THREE_STAR, "Coffee was ok");
-        p2 = pm.reviewProduct(p2, Rating.ONE_STAR, "Where is the milk!?");
-        p2 = pm.reviewProduct(p2, Rating.FIVE_STAR, "It's perfect with ten spoons of sugar!");
-        pm.printProductReport(p2);
+        pm.createProduct(103, "Cake", BigDecimal.valueOf(3.99), Rating.NOT_RATED);
+        pm.reviewProduct(103, Rating.FIVE_STAR, "Coffee was ok");
+        pm.reviewProduct(103, Rating.FOUR_STAR, "Where is the milk!?");
+        pm.reviewProduct(103, Rating.FIVE_STAR, "It's perfect with ten spoons of sugar!");
+//        pm.printProductReport(103);
+
+        pm.createProduct(104, "Cookie", BigDecimal.valueOf(2.99), Rating.NOT_RATED);
+        pm.reviewProduct(104, Rating.THREE_STAR, "Coffee was ok");
+        pm.reviewProduct(104, Rating.THREE_STAR, "Where is the milk!?");
+//        pm.printProductReport(104);
+
+        pm.createProduct(105, "Chocolate", BigDecimal.valueOf(2.50), Rating.NOT_RATED);
+        pm.reviewProduct(105, Rating.FOUR_STAR, "Coffee was ok");
+        pm.reviewProduct(105, Rating.FOUR_STAR, "Where is the milk!?");
+//        pm.printProductReport(105);
+
+        pm.createProduct(106, "Hot Chocolate", BigDecimal.valueOf(2.50), Rating.NOT_RATED);
+        pm.reviewProduct(106, Rating.TWO_STAR, "Coffee was ok");
+        pm.reviewProduct(106, Rating.THREE_STAR, "Where is the milk!?");
+        pm.reviewProduct(106, Rating.TWO_STAR, "It's perfect with ten spoons of sugar!");
+        pm.reviewProduct(106, Rating.ONE_STAR, "Where is the milk!?");
+//        pm.printProductReport(106);
+
+        Comparator<Product> ratingSorter = (p1, p2) -> p2.getRating().ordinal() - p1.getRating().ordinal();
+        Comparator<Product> priceSorter = (p1, p2) -> p2.getPrice().compareTo(p1.getPrice());
+
+        pm.printProducts(ratingSorter);
+        pm.printProducts(priceSorter);
+        pm.printProducts(ratingSorter.thenComparing(priceSorter));
     }
 
 }

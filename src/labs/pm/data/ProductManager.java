@@ -23,6 +23,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -73,21 +75,53 @@ public class ProductManager {
     public Product createProduct(int id, String name, BigDecimal price, Rating rating) {
         Product product = new Drink(id, name, price, rating);
         products.putIfAbsent(product, new ArrayList<>());
+
         return product;
+    }
+
+    public Product findProduct(int id) {
+        Product result = null;
+        for (Product product : products.keySet()) {
+            if (product.getId() == id) {
+                result = product;
+                break;
+            }
+        }
+        return result;
     }
 
     public void printProductReport(Product product) {
         List<Review> reviews = products.get(product);
-
         StringBuilder txt = new StringBuilder();
+
         txt.append(formatter.formatProduct(product));
         txt.append("\n");
+
+        Collections.sort(reviews);
+
         for (Review review : reviews) {
             txt.append(formatter.formatReview(review));
             txt.append("\n");
         }
         if (reviews.isEmpty()) {
             txt.append(formatter.getText("no.reviews"));
+            txt.append("\n");
+        }
+
+        System.out.println(txt);
+    }
+
+    public void printProductReport(int id) {
+        printProductReport(findProduct(id));
+    }
+
+    public void printProducts(Comparator<Product> sorter) {
+        List<Product> productList = new ArrayList<>(products.keySet());
+        productList.sort(sorter);
+        StringBuilder txt = new StringBuilder();
+
+        for (Product product : productList) {
+            txt.append(formatter.formatProduct(product));
             txt.append("\n");
         }
 
@@ -109,6 +143,10 @@ public class ProductManager {
         products.put(product, reviews);
 
         return product;
+    }
+
+    public Product reviewProduct(int id, Rating rating, String comments) {
+        return reviewProduct(findProduct(id), rating, comments);
     }
 
     private static class ResourceFormatter {

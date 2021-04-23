@@ -38,9 +38,9 @@ import java.util.stream.Collectors;
  *
  * @author LacertaBasiliscusLinnaeus
  */
-public class ProductManager {
+public final class ProductManager {
 
-    private Map<Product, List<Review>> products = new HashMap<>();
+    private final Map<Product, List<Review>> products = new HashMap<>();
     private ResourceFormatter formatter;
 
     private static Map<String, ResourceFormatter> formatters = Map.of(
@@ -90,12 +90,12 @@ public class ProductManager {
         List<Review> reviews = products.get(product);
         StringBuilder txt = new StringBuilder();
 
-        txt.append(formatter.formatProduct(product) + '\n');
+        txt.append(formatter.formatProduct(product)).append('\n');
 
         Collections.sort(reviews);
 
         if (reviews.isEmpty()) {
-            txt.append(formatter.getText("no.reviews") + '\n');
+            txt.append(formatter.getText("no.reviews")).append('\n');
         } else {
             txt.append(reviews.stream().map(r -> formatter.formatReview(r) + '\n').collect(Collectors.joining()));
         }
@@ -120,6 +120,19 @@ public class ProductManager {
         System.out.println(txt);
     }
 
+    public Map<String, String> getDiscounts() {
+
+        return products.keySet()
+                .stream()
+                .collect(
+                        Collectors.groupingBy(
+                                product -> product.getRating().getStars(),
+                                Collectors.collectingAndThen(
+                                        Collectors.summingDouble(
+                                                product -> product.getDiscount().doubleValue()),
+                                        discount -> formatter.moneyFormat.format(discount))));
+    }
+
     public Product reviewProduct(Product product, Rating rating, String comments) {
         List<Review> reviews = products.get(product);
         reviews.add(new Review(rating, comments));
@@ -142,13 +155,11 @@ public class ProductManager {
 
     private static class ResourceFormatter {
 
-        private final Locale locale;
         private final ResourceBundle resources;
         private final DateTimeFormatter dateFormat;
         private final NumberFormat moneyFormat;
 
         private ResourceFormatter(Locale locale) {
-            this.locale = locale;
             resources = ResourceBundle.getBundle("labs.pm.data.resources", locale);
             dateFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).localizedBy(locale);
             moneyFormat = NumberFormat.getCurrencyInstance(locale);
